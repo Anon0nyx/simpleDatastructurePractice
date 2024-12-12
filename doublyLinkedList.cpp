@@ -4,9 +4,11 @@
 struct LinkedListNode {
   int val;
   LinkedListNode* nextNode;
-  LinkedListNode() : val(0), nextNode(nullptr) {}
-  LinkedListNode(int x) : val(x), nextNode(nullptr) {}
-  LinkedListNode(int x, LinkedListNode* node) : val(x), nextNode(node) {}
+  LinkedListNode* previousNode;
+  LinkedListNode() : val(0), nextNode(nullptr), previousNode(nullptr) {}
+  LinkedListNode(int x) : val(x), nextNode(nullptr), previousNode(nullptr) {}
+  LinkedListNode(int x, LinkedListNode* node) : val(x), nextNode(node), previousNode(nullptr) {}
+  LinkedListNode(int x, LinkedListNode* priorNode, LinkedListNode* newNode) : val(x), previousNode(priorNode), nextNode(newNode) {}
 };
 
 void printAllNodes(LinkedListNode *rootNode) {
@@ -20,10 +22,12 @@ void printAllNodes(LinkedListNode *rootNode) {
 
 void insertNode(int val, LinkedListNode* rootNode) {
   LinkedListNode* tempNode = rootNode;
+
   while (tempNode->nextNode) {
     tempNode = tempNode->nextNode;
   }
   tempNode->nextNode = new LinkedListNode(val);
+  tempNode->nextNode->previousNode = tempNode; 
 }
 
 int findNode(int val, LinkedListNode* rootNode) {
@@ -51,11 +55,4 @@ int main() {
   }
   printAllNodes(&newRootNode);
 
-  int nodeIndex = findNode(4, &newRootNode);
-
-  std::cout << "Our value is in Node number: " << nodeIndex << std::endl;
-
-  deleteNode(4, &newRootNode);
-  deleteNode(5, &newRootNode);
-  printAllNodes(&newRootNode);
 }
