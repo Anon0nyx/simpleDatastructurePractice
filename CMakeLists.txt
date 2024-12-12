@@ -10,6 +10,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # Add the executable
 add_executable(SinglyLinkedList singlyLinkedList.cpp)
 add_executable(DoublyLinkedList doublyLinkedList.cpp)
+add_executable(Stack stack.cpp)
 
 # Include directories
 include_directories(${PROJECT_SOURCE_DIR})

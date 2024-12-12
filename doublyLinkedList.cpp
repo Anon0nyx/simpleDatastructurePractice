@@ -3,12 +3,10 @@
 
 struct LinkedListNode {
   int val;
-  LinkedListNode* nextNode;
-  LinkedListNode* previousNode;
+  LinkedListNode* nextNode = nullptr;
+  LinkedListNode* previousNode = nullptr;
   LinkedListNode() : val(0), nextNode(nullptr), previousNode(nullptr) {}
   LinkedListNode(int x) : val(x), nextNode(nullptr), previousNode(nullptr) {}
-  LinkedListNode(int x, LinkedListNode* node) : val(x), nextNode(node), previousNode(nullptr) {}
-  LinkedListNode(int x, LinkedListNode* priorNode, LinkedListNode* newNode) : val(x), previousNode(priorNode), nextNode(newNode) {}
 };
 
 void printAllNodes(LinkedListNode *rootNode) {
@@ -46,13 +44,18 @@ void deleteNode(int val, LinkedListNode* rootNode) {
     tempNode = tempNode->nextNode;
   }
   tempNode->nextNode = tempNode->nextNode->nextNode;
+  std::cout << "Successfully deleted Node with value: " << val << std::endl;
 }
 
 int main() {
-  LinkedListNode newRootNode(0);
-  for (int i = 1; i <= 10; ++i) {
-    insertNode(i, &newRootNode);
+  LinkedListNode rootNode(1);
+  for (int i = 2; i <= 10; ++i) {
+    insertNode(i, &rootNode);
   }
-  printAllNodes(&newRootNode);
+  printAllNodes(&rootNode);
 
+  std::cout << findNode(4, &rootNode) << std::endl;
+  deleteNode(4, &rootNode);
+
+  printAllNodes(&rootNode);
 }
