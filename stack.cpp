@@ -21,10 +21,17 @@ static void pop(Stack& stack) {
   --stack.top;
 }
 
+static void peek(Stack& stack) {
+  std::cout << "Peeking the top of the Stack: ";
+  std::cout << stack.stackArray[stack.top] << "\n" << std::endl;
+}
+
 static void printStack(Stack& stack) {
+  std::cout << "Printing Entire Stack: " << std::endl; 
   for (int i = stack.top; i >= 0; --i) {
     std::cout << stack.stackArray[i] << std::endl;
   }
+  std::cout << std::endl;
 }
 
 int main() {
@@ -40,5 +47,5 @@ int main() {
   printStack(newStack);
  
   push(19, newStack);
-  printStack(newStack);
+  peek(newStack);
 }
