@@ -8,89 +8,99 @@
 // Insert a node into the quadtree
 template <typename EntityType>
 void Quad<EntityType>::insert(Node<EntityType>* node) {
-    if (node == nullptr)
-        return;
+  if (node == nullptr)
+    return;
 
-    if (!inBoundary(node->pos))
-        return;
+  if (!inBoundary(node->pos))
+    return;
 
-    if (abs(topLeft.x - botRight.x) <= 1 && abs(topLeft.y - botRight.y) <= 1) {
-        if (n == nullptr)
-            n = node;
-        return;
-    }
+  if (abs(topLeft.x - botRight.x) <= 1 && abs(topLeft.y - botRight.y) <= 1) {
+    if (ourNode == nullptr)
+      ourNode = node;
+    return;
+  }
 
-    if ((topLeft.x + botRight.x) / 2 >= node->pos.x) {
-        if ((topLeft.y + botRight.y) / 2 >= node->pos.y) {
-            if (topLeftTree == nullptr)
-                topLeftTree = new Quad(topLeft, Point((topLeft.x + botRight.x) / 2, (topLeft.y + botRight.y) / 2));
-            topLeftTree->insert(node);
-        } else {
-            if (botLeftTree == nullptr)
-                botLeftTree = new Quad(Point(topLeft.x, (topLeft.y + botRight.y) / 2), Point((topLeft.x + botRight.x) / 2, botRight.y));
-            botLeftTree->insert(node);
-        }
+  if ((topLeft.x + botRight.x) / 2 >= node->pos.x) {
+    if ((topLeft.y + botRight.y) / 2 >= node->pos.y) {
+      if (topLeftTree == nullptr)
+        topLeftTree = new Quad(topLeft, Point((topLeft.x + botRight.x) / 2, (topLeft.y + botRight.y) / 2));
+      topLeftTree->insert(node);
     } else {
-        if ((topLeft.y + botRight.y) / 2 >= node->pos.y) {
-            if (topRightTree == nullptr)
-                topRightTree = new Quad(Point((topLeft.x + botRight.x) / 2, topLeft.y), Point(botRight.x, (topLeft.y + botRight.y) / 2));
-            topRightTree->insert(node);
-        } else {
-            if (botRightTree == nullptr)
-                botRightTree = new Quad(Point((topLeft.x + botRight.x) / 2, (topLeft.y + botRight.y) / 2), botRight);
-            botRightTree->insert(node);
-        }
+      if (botLeftTree == nullptr)
+        botLeftTree = new Quad(Point(topLeft.x, (topLeft.y + botRight.y) / 2), Point((topLeft.x + botRight.x) / 2, botRight.y));
+      botLeftTree->insert(node);
     }
+  } else {
+    if ((topLeft.y + botRight.y) / 2 >= node->pos.y) {
+      if (topRightTree == nullptr)
+        topRightTree = new Quad(Point((topLeft.x + botRight.x) / 2, topLeft.y), Point(botRight.x, (topLeft.y + botRight.y) / 2));
+      topRightTree->insert(node);
+    } else {
+      if (botRightTree == nullptr)
+        botRightTree = new Quad(Point((topLeft.x + botRight.x) / 2, (topLeft.y + botRight.y) / 2), botRight);
+      botRightTree->insert(node);
+    }
+  }
 }
 
 // Find a node in a quadtree
 template <typename EntityType>
 Node<EntityType>* Quad<EntityType>::search(Point p) {
-    if (!inBoundary(p))
+  if (!inBoundary(p))
+    return nullptr;
+
+  if (ourNode != nullptr)
+    return ourNode;
+
+  if ((topLeft.x + botRight.x) / 2 >= p.x) {
+    if ((topLeft.y + botRight.y) / 2 >= p.y) {
+      if (topLeftTree == nullptr)
         return nullptr;
-
-    if (n != nullptr)
-        return n;
-
-    if ((topLeft.x + botRight.x) / 2 >= p.x) {
-        if ((topLeft.y + botRight.y) / 2 >= p.y) {
-            if (topLeftTree == nullptr)
-                return nullptr;
-            return topLeftTree->search(p);
-        } else {
-            if (botLeftTree == nullptr)
-                return nullptr;
-            return botLeftTree->search(p);
-        }
+      return topLeftTree->search(p);
     } else {
-        if ((topLeft.y + botRight.y) / 2 >= p.y) {
-            if (topRightTree == nullptr)
-                return nullptr;
-            return topRightTree->search(p);
-        } else {
-            if (botRightTree == nullptr)
-                return nullptr;
-            return botRightTree->search(p);
-        }
+      if (botLeftTree == nullptr)
+        return nullptr;
+      return botLeftTree->search(p);
     }
+  } else {
+      if ((topLeft.y + botRight.y) / 2 >= p.y) {
+        if (topRightTree == nullptr)
+          return nullptr;
+        return topRightTree->search(p);
+      } else {
+        if (botRightTree == nullptr)
+          return nullptr;
+        return botRightTree->search(p);
+      }
+  }
 }
 
 // Check if current quadtree contains the point
 template <typename EntityType>
 bool Quad<EntityType>::inBoundary(Point p) {
-    return (p.x >= topLeft.x && p.x <= botRight.x && p.y >= topLeft.y && p.y <= botRight.y);
+  return (p.x >= topLeft.x && p.x <= botRight.x && p.y >= topLeft.y && p.y <= botRight.y);
+}
+
+template <typename EntityType>
+void Quad<EntityType>::printNode() {
+  std::cout << ourNode->data.id << std::endl;
+  return;
 }
 
 // Print the IDs of the entities in the quadtree
 template <typename EntityType>
 void Quad<EntityType>::printIDs() {
-    if (n != nullptr) {
-        std::cout << "Entity ID: " << n->data.id << " at (" << n->pos.x << ", " << n->pos.y << ")\n";
-    }
-    if (topLeftTree != nullptr) topLeftTree->printIDs();
-    if (topRightTree != nullptr) topRightTree->printIDs();
-    if (botLeftTree != nullptr) botLeftTree->printIDs();
-    if (botRightTree != nullptr) botRightTree->printIDs();
+  if (ourNode != nullptr) {
+    std::cout << "Entity ID: " << ourNode->data.id << " at (" << ourNode->pos.x << ", " << ourNode->pos.y << ")\n";
+  }
+  std::cout << "Top Left" << std::endl;
+  if (topLeftTree != nullptr) topLeftTree->printIDs();
+  std::cout << "Top Right" << std::endl;
+  if (topRightTree != nullptr) topRightTree->printIDs();
+  std::cout << "Bottom Left" << std::endl;
+  if (botLeftTree != nullptr) botLeftTree->printIDs();
+  std::cout << "Bottom Right" << std::endl;
+  if (botRightTree != nullptr) botRightTree->printIDs();
 }
 
 #endif // NEW_QUAD_TREE_IMPL_H
